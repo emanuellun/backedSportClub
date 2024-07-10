@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar cliente</title>
+    <link rel="shortcut icon" href="static/imagenes//sportclub-logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./static/css/estilos.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar-index ">
+            <img class="logo-nav" src="./static/imagenes/logo_Codo.png" alt="logo codo a codo">
+        </nav>
+    </header>
+
+    <div class="logo-centrado">
+        <img src="./static/imagenes/sportclub logo.png" alt="logo SportClub">
+    </div>
+    <h1>Agregar Cliente a la base de datos</h1><br>
+
+    <!--enctype="multipart/form-data" es necesario para enviar archivos al back.-->
+    <form id="formulario" enctype="multipart/form-data">
+        
+        <label for="descripcion">DNI:</label>
+        <input type="number" id="dni" name="dni" required><br>
+
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" name="edad" required><br>
+
+        <label for="fecha_nac">Fecha de Nacimiento:</label>
+        <input type="text" id="fecha_nac" name="fecha_nac" required><br>
+
+        <label for="imagenCliente">Imagen del cliente:</label>
+        <input type="file" id="imagenCliente" name="imagen">
+
+        <br><br>
+        <label for="sedeCliente">Sede:</label>
+        <input type="text" id="sedeCliente" name="sede">
+        
+        <button type="submit">Agregar Cliente</button>
+        <a href="index.html">Menu principal</a>
+    </form>
+
+    <script>
+        //const URL = "http://127.0.0.1:5000/"
+
+        //Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
+        const URL = "https://emanuelluna99.pythonanywhere.com/"
+        
+
+        // Capturamos el evento de envío del formulario
+        document.getElementById('formulario').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evitamos que se envie el form 
+
+            var formData = new FormData(this);
+    
+            // Realizamos la solicitud POST al servidor
+            fetch(URL + 'clientes', {
+                method: 'POST',
+                body: formData // Aquí enviamos formData. Dado que formData puede contener archivos, no se utiliza JSON.
+            })
+
+            //Después de realizar la solicitud POST, se utiliza el método then() para manejar la respuesta del servidor.
+            .then(function (response) {
+                    if (response.ok) { 
+                        //Si la respuesta es exitosa, convierte los datos de la respuesta a formato JSON.
+                        return response.json(); 
+                    } else {
+                        // Si hubo un error, lanzar explícitamente una excepción
+                        // para ser "catcheada" más adelante
+                        throw new Error('Error al agregar el cliente.');
+                    }
+            })
+
+                //Respuesta OK, muestra una alerta informando que el producto se agregó correctamente y limpia los campos del formulario para que puedan ser utilizados para un nuevo producto.
+                .then(function (data) {
+                    alert('Cliente agregado correctamente.');
+                })
+
+                // En caso de error, mostramos una alerta con un mensaje de error.
+                .catch(function (error) {
+                    alert('Error al agregar el cliente.');
+                })
+
+                // Limpiar el formulario en ambos casos (éxito o error)
+                .finally(function () {
+                    document.getElementById('dni').value = "";
+                    document.getElementById('edad').value = "";
+                    document.getElementById('fecha_nac').value = "";
+                    document.getElementById('imagenCliente').value = "";
+                    document.getElementById('sedeCliente').value = "";
+                });
+        })
+    </script>
+</body>
+
+</html>
